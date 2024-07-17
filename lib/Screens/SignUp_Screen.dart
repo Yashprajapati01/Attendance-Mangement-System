@@ -1,8 +1,13 @@
 import 'package:attendance_mangement_system/components/Button.dart';
 import 'package:attendance_mangement_system/components/MyTextInputField.dart';
-import 'package:attendance_mangement_system/Auth/LoginOrSignUp.dart';
+import 'package:dropdown_textfield/dropdown_textfield.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+
+import '../Auth/Auth_Services/auth_service.dart';
+import 'Login_Screen.dart';
 class SignUpScreen extends StatefulWidget {
   final void Function()? onTap;
   const SignUpScreen({super.key , required this.onTap});
@@ -12,12 +17,36 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  TextEditingController emailController = new TextEditingController();
+  TextEditingController passController = new TextEditingController();
+  TextEditingController userTypeController = new TextEditingController();
+
+  final AuthService _authService = AuthService();
+
+  void signup(BuildContext context) async {
+    User? user = await _authService.signUpWithEmailAndPassword(
+      emailController.text,
+      passController.text,
+      userTypeController.text,
+    );
+    if (user != null) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginScreen(onTap: () {  },)),
+      );
+    } else {
+      print('Signup failed');
+    }
+  }
+
+
+
   bool? ischecked = false;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.background,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(25.0),
@@ -69,29 +98,58 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                 ),
                 SizedBox(height: MediaQuery.of(context).size.width * 0.06),
-                MyTextField(hintText: "Roll Number / Email", tf: false, focusNode: null),
-                SizedBox(height: MediaQuery.of(context).size.width * 0.06),
-                MyTextField(hintText: "Password", tf: true, focusNode: null),
-                SizedBox(height: MediaQuery.of(context).size.width * 0.03),
-                MyTextField(hintText: "Confirm Password", tf: true, focusNode: null),
-                SizedBox(height: MediaQuery.of(context).size.width * 0.1),
-                Container(
-                  decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.secondary,
-                      borderRadius: BorderRadius.circular(8)
-                  ),
-                  padding: EdgeInsets.all(25),
-                  child: Center(
-                    child: Text('Sign Up',
-                      style: TextStyle(
-                        fontSize: 15,
-                        color: Colors.grey.shade300,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Gotham book',
-                      ),
-                    ),
-                  ),
+                MyTextField(hintText: "Roll Number / Email",
+                    controller: emailController,
+                    tf: false,
+                    focusNode: null
                 ),
+                SizedBox(height: MediaQuery.of(context).size.width * 0.06),
+                MyTextField(hintText: "Password",
+                    controller: passController,
+                    tf: true,
+                    focusNode: null
+                ),
+                SizedBox(height: MediaQuery.of(context).size.width * 0.03),
+                //  DropdownMenu(dropdownMenuEntries: <DropdownMenuEntry<TextEditingController>>[
+                //   DropdownMenuEntry(value: userType, label: 'Admin'),
+                //    DropdownMenuEntry(value: userType, label: 'Professor'),
+                //    DropdownMenuEntry(value: userType, label: 'Student'),
+                // ]),
+                // DropDownTextField(
+                //   controller: userType,
+                //   dropDownItemCount: 3,
+                //   dropDownList: const [DropDownValueModel(name: 'Admin', value: null),
+                //     DropDownValueModel(name: 'Professor', value: null),
+                //     DropDownValueModel(name: 'Student', value: null),
+                //   ],
+                //   onChanged: (value){},
+                // ),
+                MyTextField(hintText: "UserType : Admin or Professor or Student",
+                    controller: userTypeController,
+                    tf: false,
+                    focusNode: null
+                ),
+                SizedBox(height: MediaQuery.of(context).size.width * 0.1),
+                MyButton(txt: "Sign Up" ,
+                  onTap: () => signup(context),
+                ),
+                // Container(
+                //   decoration: BoxDecoration(
+                //       color: Theme.of(context).colorScheme.secondary,
+                //       borderRadius: BorderRadius.circular(8)
+                //   ),
+                //   padding: EdgeInsets.all(25),
+                //   child: Center(
+                //     child: Text('Sign Up',
+                //       style: TextStyle(
+                //         fontSize: 15,
+                //         color: Colors.grey.shade300,
+                //         fontWeight: FontWeight.bold,
+                //         fontFamily: 'Gotham book',
+                //       ),
+                //     ),
+                //   ),
+                // ),
                 SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -123,3 +181,4 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 }
+List<String> userTypee = ["Admin","Professor","Student"];

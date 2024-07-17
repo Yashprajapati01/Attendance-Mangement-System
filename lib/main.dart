@@ -1,10 +1,15 @@
+import 'package:attendance_mangement_system/Auth/Auth_gate.dart';
 import 'package:attendance_mangement_system/Auth/LoginOrSignUp.dart';
 import 'package:attendance_mangement_system/Screens/Login_Screen.dart';
 import 'package:attendance_mangement_system/Screens/SignUp_Screen.dart';
+import 'package:attendance_mangement_system/firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:attendance_mangement_system/Theme/dark_mode.dart';
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
 
@@ -18,7 +23,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: darkMode,
       title: 'Attendance Management System',
-      home: LoginOrSignUp(),
+      home: const AuthGate(),
     );
   }
 }

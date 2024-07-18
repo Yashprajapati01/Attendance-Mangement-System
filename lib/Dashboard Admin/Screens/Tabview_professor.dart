@@ -1,35 +1,26 @@
+import 'package:attendance_mangement_system/Dashboard%20Admin/Section%202%20(%20professors)/ProgramScreenP.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../Section 2 ( professors)/CreateProgramP.dart';
 
-import '../Section 1 (student)/Create_Programme.dart';
-import 'ProgramScreen.dart';
-
-class BatchScreen extends StatelessWidget {
-  final String batchId;
-  final String batchName;
-
-  BatchScreen({required this.batchId, required this.batchName});
-
-  void _createProgramme(BuildContext context) {
+class TabviewProfessor extends StatelessWidget {
+  void _createProgram(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => CreateProgrammeDialog(batchId: batchId),
+      builder: (context) => CreateProgramDialogP(),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Batch: $batchName'),
-      ),
       body: Padding(
         padding: const EdgeInsets.all(14.0),
         child: Column(
           children: [
             GestureDetector(
-              onTap: () =>  _createProgramme(context),
+              onTap: () =>  _createProgram(context),
               child: const Card(
                 color: Color(0xff4B70F5),
                 child: Padding(
@@ -37,7 +28,7 @@ class BatchScreen extends StatelessWidget {
                   child: Column(
                     children: [
                       Row(
-                        children: [Text('Add',
+                        children: [Text('Manage',
                           style: TextStyle(
                               fontSize: 20
                           ),)],
@@ -45,7 +36,7 @@ class BatchScreen extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Program Here',
+                          Text('Programs Here',
                             style: TextStyle(
                                 fontSize: 20
                             ),),
@@ -61,7 +52,7 @@ class BatchScreen extends StatelessWidget {
             const Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text('Branch List :',
+                Text('Program List :',
                   style: TextStyle(
                       fontSize: 16
                   ),),
@@ -69,28 +60,25 @@ class BatchScreen extends StatelessWidget {
             ),
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
-                stream: FirebaseFirestore.instance
-                    .collection('programmes')
-                    .where('batchId', isEqualTo: batchId)
-                    .snapshots(),
+                stream: FirebaseFirestore.instance.collection('programs').snapshots(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
                     return CircularProgressIndicator();
                   }
-                  var programmes = snapshot.data!.docs;
+                  var programs = snapshot.data!.docs;
                   return ListView.builder(
-                    itemCount: programmes.length,
+                    itemCount: programs.length,
                     itemBuilder: (context, index) {
-                      var programme = programmes[index];
+                      var program = programs[index];
                       return Container(
                         margin: EdgeInsets.symmetric(vertical: 5),
                         child: Card(
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(20)
                           ),
                           child: ListTile(
-                            title: Text(programme['name']),
-                            leading: const Text('Branch :',
+                            title: Text(program['name']),
+                            leading: const Text('Program :',
                               style: TextStyle(
                                   fontSize: 16
                               ),),
@@ -99,9 +87,9 @@ class BatchScreen extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => ProgrammeScreen(
-                                    programmeId: programme.id,
-                                    programmeName: programme['name'],
+                                  builder: (context) => ProgramScreenP(
+                                    programId: program.id,
+                                    programName: program['name'],
                                   ),
                                 ),
                               );

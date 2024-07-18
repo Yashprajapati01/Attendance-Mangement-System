@@ -1,20 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'CreateProfessor.dart';
 
-import '../Section 1 (student)/Create_Programme.dart';
-import 'ProgramScreen.dart';
+class BranchScreenP extends StatelessWidget {
+  final String branchId;
+  final String branchName;
 
-class BatchScreen extends StatelessWidget {
-  final String batchId;
-  final String batchName;
+  BranchScreenP({required this.branchId, required this.branchName});
 
-  BatchScreen({required this.batchId, required this.batchName});
-
-  void _createProgramme(BuildContext context) {
+  void _createProfessor(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => CreateProgrammeDialog(batchId: batchId),
+      builder: (context) => CreateProfessorDialog(branchId: branchId, branchName: branchName),
     );
   }
 
@@ -22,14 +20,14 @@ class BatchScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Batch: $batchName'),
+        title: Text('Branch: $branchName'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(14.0),
         child: Column(
           children: [
             GestureDetector(
-              onTap: () =>  _createProgramme(context),
+              onTap: () =>  _createProfessor(context),
               child: const Card(
                 color: Color(0xff4B70F5),
                 child: Padding(
@@ -37,7 +35,7 @@ class BatchScreen extends StatelessWidget {
                   child: Column(
                     children: [
                       Row(
-                        children: [Text('Add',
+                        children: [Text('Manage',
                           style: TextStyle(
                               fontSize: 20
                           ),)],
@@ -45,7 +43,7 @@ class BatchScreen extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Program Here',
+                          Text('Professors Here',
                             style: TextStyle(
                                 fontSize: 20
                             ),),
@@ -61,7 +59,7 @@ class BatchScreen extends StatelessWidget {
             const Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text('Branch List :',
+                Text('Professors List :',
                   style: TextStyle(
                       fontSize: 16
                   ),),
@@ -70,42 +68,28 @@ class BatchScreen extends StatelessWidget {
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
                 stream: FirebaseFirestore.instance
-                    .collection('programmes')
-                    .where('batchId', isEqualTo: batchId)
+                    .collection('professors')
+                    .where('branchId', isEqualTo: branchId)
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
-                    return CircularProgressIndicator();
+                    return const CircularProgressIndicator();
                   }
-                  var programmes = snapshot.data!.docs;
+                  var professors = snapshot.data!.docs;
                   return ListView.builder(
-                    itemCount: programmes.length,
+                    itemCount: professors.length,
                     itemBuilder: (context, index) {
-                      var programme = programmes[index];
+                      var professor = professors[index];
                       return Container(
                         margin: EdgeInsets.symmetric(vertical: 5),
                         child: Card(
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(20)
                           ),
                           child: ListTile(
-                            title: Text(programme['name']),
-                            leading: const Text('Branch :',
-                              style: TextStyle(
-                                  fontSize: 16
-                              ),),
-                            trailing: Icon(CupertinoIcons.forward),
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => ProgrammeScreen(
-                                    programmeId: programme.id,
-                                    programmeName: programme['name'],
-                                  ),
-                                ),
-                              );
-                            },
+                            leading: Icon(Icons.person),
+                            title: Text(professor['name']),
+                            subtitle: Text('${professor['email']} - ${professor['designation']}'),
                           ),
                         ),
                       );
@@ -120,3 +104,10 @@ class BatchScreen extends StatelessWidget {
     );
   }
 }
+// title: Text(professor['name']),
+// subtitle: Text(professor['email']),
+// leading: const Text('',
+// style: TextStyle(
+// fontSize: 16
+// ),
+// ),

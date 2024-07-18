@@ -22,37 +22,85 @@ class BranchScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('Branch: $branchName'),
       ),
-      body: Column(
-        children: [
-          ElevatedButton(
-            onPressed: () => _createStudent(context),
-            child: Text('Create Student'),
-          ),
-          Expanded(
-            child: StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection('students')
-                  .where('branchId', isEqualTo: branchId)
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return CircularProgressIndicator();
-                }
-                var students = snapshot.data!.docs;
-                return ListView.builder(
-                  itemCount: students.length,
-                  itemBuilder: (context, index) {
-                    var student = students[index];
-                    return ListTile(
-                      title: Text(student['name']+ '   '+student['rollNumber']),
-                      subtitle: Text(student['email']),
-                    );
-                  },
-                );
-              },
+      body: Padding(
+        padding: const EdgeInsets.all(14.0),
+        child: Column(
+          children: [
+            GestureDetector(
+              onTap: () => _createStudent(context),
+              child: const Card(
+                color: Color(0xff4B70F5),
+                child: Padding(
+                  padding: EdgeInsets.all(16.0), // padding inside the Card
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [Text('Add',
+                          style: TextStyle(
+                              fontSize: 20
+                          ),)],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Students Here',
+                            style: TextStyle(
+                                fontSize: 20
+                            ),),
+                          Icon(Icons.add),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ),
-          ),
-        ],
+            const SizedBox(height: 20),
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text('Branch List :',
+                  style: TextStyle(
+                      fontSize: 16
+                  ),),
+              ],
+            ),
+            Expanded(
+              child: StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('students')
+                    .where('branchId', isEqualTo: branchId)
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return CircularProgressIndicator();
+                  }
+                  var students = snapshot.data!.docs;
+                  return ListView.builder(
+                    itemCount: students.length,
+                    itemBuilder: (context, index) {
+                      var student = students[index];
+                      return Container(
+                        margin: EdgeInsets.symmetric(vertical: 5),
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: ListTile(
+                            title: Text(student['rollNumber']),
+                            subtitle: Text(student['email']),
+                            leading: Text(student['name'] ,
+                            style: TextStyle(fontSize: 16),),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

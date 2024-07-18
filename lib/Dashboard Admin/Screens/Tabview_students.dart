@@ -1,35 +1,29 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../Section 1 (student)/Create_Programme.dart';
-import 'ProgramScreen.dart';
+import '../Section 1 (student)/Create_Batch.dart';
+import 'BatchScreen.dart';
 
-class BatchScreen extends StatelessWidget {
-  final String batchId;
-  final String batchName;
+class TabviewStudents extends StatelessWidget {
+  const TabviewStudents({super.key});
 
-  BatchScreen({required this.batchId, required this.batchName});
-
-  void _createProgramme(BuildContext context) {
+  void _createBatch(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => CreateProgrammeDialog(batchId: batchId),
+      builder: (context) => CreateBatchDialog(),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Batch: $batchName'),
-      ),
-      body: Padding(
+    return Container(
+      child: Padding(
         padding: const EdgeInsets.all(14.0),
         child: Column(
           children: [
             GestureDetector(
-              onTap: () =>  _createProgramme(context),
+              onTap: () =>  _createBatch(context),
               child: const Card(
                 color: Color(0xff4B70F5),
                 child: Padding(
@@ -37,7 +31,7 @@ class BatchScreen extends StatelessWidget {
                   child: Column(
                     children: [
                       Row(
-                        children: [Text('Add',
+                        children: [Text('Manage',
                           style: TextStyle(
                               fontSize: 20
                           ),)],
@@ -45,7 +39,7 @@ class BatchScreen extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Program Here',
+                          Text('Batches Here',
                             style: TextStyle(
                                 fontSize: 20
                             ),),
@@ -67,30 +61,31 @@ class BatchScreen extends StatelessWidget {
                   ),),
               ],
             ),
+            ElevatedButton(
+              onPressed: () => _createBatch(context),
+              child: const Text('Create Batch'),
+            ),
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
-                stream: FirebaseFirestore.instance
-                    .collection('programmes')
-                    .where('batchId', isEqualTo: batchId)
-                    .snapshots(),
+                stream: FirebaseFirestore.instance.collection('batches').snapshots(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
-                    return CircularProgressIndicator();
+                    return const CircularProgressIndicator();
                   }
-                  var programmes = snapshot.data!.docs;
+                  var batches = snapshot.data!.docs;
                   return ListView.builder(
-                    itemCount: programmes.length,
+                    itemCount: batches.length,
                     itemBuilder: (context, index) {
-                      var programme = programmes[index];
+                      var batch = batches[index];
                       return Container(
                         margin: EdgeInsets.symmetric(vertical: 5),
                         child: Card(
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(20)
                           ),
                           child: ListTile(
-                            title: Text(programme['name']),
-                            leading: const Text('Branch :',
+                            title: Text(batch['name']),
+                            leading: Text('Branch :',
                               style: TextStyle(
                                   fontSize: 16
                               ),),
@@ -99,9 +94,9 @@ class BatchScreen extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => ProgrammeScreen(
-                                    programmeId: programme.id,
-                                    programmeName: programme['name'],
+                                  builder: (context) => BatchScreen(
+                                    batchId: batch.id,
+                                    batchName: batch['name'],
                                   ),
                                 ),
                               );

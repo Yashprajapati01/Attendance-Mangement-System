@@ -28,7 +28,8 @@
 
 
 import 'package:attendance_mangement_system/Auth/LoginOrSignUp.dart';
-import 'package:attendance_mangement_system/Screens/DashboardScreen.dart';
+import 'package:attendance_mangement_system/Dashboard%20Admin/admin_dashboard.dart';
+import 'package:attendance_mangement_system/Dashboard%20Admin/DashboardScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -51,7 +52,7 @@ class AuthGate extends StatelessWidget {
         } else if (snapshot.hasData && snapshot.data == true) {
           User? user = FirebaseAuth.instance.currentUser;
           if (user != null) {
-            return DashboardScreen();
+            return DashboardScreen(userId: user.uid,);
           } else {
             return LoginOrSignUp();
           }

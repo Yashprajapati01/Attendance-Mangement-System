@@ -124,7 +124,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 //   ],
                 //   onChanged: (value){},
                 // ),
-                MyTextField(hintText: "UserType : Admin or Professor or Student",
+                MyTextField(hintText: "UserType : Admin/Professor/Student",
                     controller: userTypeController,
                     tf: false,
                     focusNode: null

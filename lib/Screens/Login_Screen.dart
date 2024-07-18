@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import '../Auth/Auth_Services/auth_service.dart';
 import '../components/Button.dart';
-import 'DashboardScreen.dart';
+import '../Dashboard Admin/DashboardScreen.dart';
 import 'Forget_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -82,7 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
         }
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => DashboardScreen()),
+          MaterialPageRoute(builder: (context) => DashboardScreen(userId : user.uid)),
         );
       }
     } catch (e) {

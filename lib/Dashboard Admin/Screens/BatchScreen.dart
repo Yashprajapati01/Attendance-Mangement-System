@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../Section 1 (student)/Create_Programme.dart';
 import 'ProgramScreen.dart';
@@ -75,7 +76,7 @@ class BatchScreen extends StatelessWidget {
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
-                    return CircularProgressIndicator();
+                    return LoadingAnimationWidget.inkDrop(color: Colors.white70, size: 20);
                   }
                   var programmes = snapshot.data!.docs;
                   return ListView.builder(
@@ -90,7 +91,7 @@ class BatchScreen extends StatelessWidget {
                           ),
                           child: ListTile(
                             title: Text(programme['name']),
-                            leading: const Text('Branch :',
+                            leading: const Text('Program :',
                               style: TextStyle(
                                   fontSize: 16
                               ),),

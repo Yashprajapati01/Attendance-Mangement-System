@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import 'Create_Branch.dart';
 
@@ -11,7 +12,7 @@ class ProgrammeList extends StatelessWidget {
       stream: FirebaseFirestore.instance.collection('programmes').snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return CircularProgressIndicator();
+          return LoadingAnimationWidget.inkDrop(color: Colors.white70, size: 20);
         }
         var programmes = snapshot.data!.docs;
         return ListView.builder(
